@@ -84,7 +84,7 @@ function loadMentions() {
               if(Date.parse(tweets[i].created_at) > Date.parse(lastLoadTime)) {
                   console.log("멘션이당!!!!".green, tweets[i].user.screen_name + " : " + tweets[i].text);
                   if(tweets[i].text.indexOf("추천") != -1) {
-                      requesters.push([tweets[i].user.screen_name, tweets[i].id]);
+                      requesters.push([tweets[i].user.screen_name, tweets[i].id_str]);
                       console.log("추천, 추천을 원하신다!!".red);
                       config.lastLoadTime = lastLoadTime = tweets[i].created_at;
                   }
