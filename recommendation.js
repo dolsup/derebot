@@ -84,7 +84,7 @@ function loadMentions() {
               if(Date.parse(tweets[i].created_at) > Date.parse(lastLoadTime)) {
                   console.log("멘션이당!!!!".green, tweets[i].user.screen_name + " : " + tweets[i].text);
                   if(tweets[i].text.indexOf("추천") != -1) {
-                      requesters.push(tweets[i].user.screen_name);
+                      requesters.push([tweets[i].user.screen_name, tweets[i].id]);
                       console.log("추천, 추천을 원하신다!!".red);
                       config.lastLoadTime = lastLoadTime = tweets[i].created_at;
                   }
@@ -106,12 +106,12 @@ function recommend(requesters) {
     var selected;
     for(var i = 0; i < requesters.length; i++) {
         console.log(selected = pickasong());
-        say("@"+requesters[i] + " 흐, 흥! <" + selected[0] + ">, " + baseUrl + selected[1] + "에 있으니까 보던가 말던가!");
+        say("@"+requesters[i][0] + " 흐, 흥! <" + selected[0] + ">, " + baseUrl + selected[1] + "에 있으니까 보던가 말던가!", requesters[i][1]);
     }
 }
 
-function say(text) {
-    client.post('statuses/update', {status: text},  function(error, tweet, response){
+function say(text, id2reply) {
+    client.post('statuses/update', {status: text, in_reply_to_status_id: id2reply},  function(error, tweet, response){
       if(error) throw error;
       console.log("트윗".green, tweet); 
     });
