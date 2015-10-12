@@ -76,8 +76,6 @@ function loadMentions() {
     //     console.log(JSON.stringify(jsonstring));
     // })
     console.log("멘션 뭐 왔나..".gray);
-    config.lastLoadTime = lastLoadTime = new Date();
-    syncClock();
     client.get('statuses/mentions_timeline', params, function(error, tweets, response){
         if (!error) {
             var requesters = [];
@@ -88,6 +86,7 @@ function loadMentions() {
                   if(tweets[i].text.indexOf("추천") != -1) {
                       requesters.push(tweets[i].user.screen_name);
                       console.log("추천, 추천을 원하신다!!".red);
+                      config.lastLoadTime = lastLoadTime = tweets[i].created_at;
                   }
               }
             }
@@ -98,6 +97,7 @@ function loadMentions() {
                     });
                 } else recommend(requesters);
             }
+            syncClock();
         }
     });
 }
