@@ -76,10 +76,12 @@ function loadMentions() {
     //     console.log(JSON.stringify(jsonstring));
     // })
     console.log("멘션 뭐 왔나..".gray);
+    config.lastLoadTime = lastLoadTime = new Date();
+    syncClock();
     client.get('statuses/mentions_timeline', params, function(error, tweets, response){
         if (!error) {
             var requesters = [];
-          
+            
             for(var i = 0; i < tweets.length; i++) {
               if(Date.parse(tweets[i].created_at) > Date.parse(lastLoadTime)) {
                   console.log("멘션이당!!!!".green, tweets[i].user.screen_name + " : " + tweets[i].text);
@@ -90,14 +92,12 @@ function loadMentions() {
               }
             }
             if(requesters.length > 0) {
-                if(Date.parse(lastCrawlTime) + 3600 < Date.parse(new Date()) || songs.length == 0) {
+                if(Date.parse(lastCrawlTime) + 3600000 < Date.parse(new Date()) || songs.length == 0) {
                     loadSongs(function() {
                       recommend(requesters);
                     });
                 } else recommend(requesters);
             }
-            config.lastLoadTime = lastLoadTime = new Date();
-            syncClock();
         }
     });
 }
