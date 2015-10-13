@@ -73,7 +73,7 @@ function pickasong() {
 
 function loadMentions() {
     request("https://api.twitter.com/1.1/application/rate_limit_status.json?resource=statuses", function(error, response, jsonstring) {
-         var rate = jsonstring.resources.statuses./statuses/mentions_timeline;
+         var rate = jsonstring.resources.statuses["/statuses/mentions_timeline"];
          console.log("멘션 뭐 왔나.. ".gray + rate.remaining + '/' + rate.limit, "RESET:" + rate.reset);
     })
     client.get('statuses/mentions_timeline', params, function(error, tweets, response){
