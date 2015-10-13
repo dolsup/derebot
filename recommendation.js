@@ -72,14 +72,13 @@ function pickasong() {
 }
 
 function loadMentions() {
-    request("https://api.twitter.com/1.1/application/rate_limit_status.json?resource=statuses", function(error, response, jsonstring) {
-         var rate = jsonstring.resources.statuses["/statuses/mentions_timeline"];
-         console.log("멘션 뭐 왔나.. ".gray + rate.remaining + '/' + rate.limit, "RESET:" + rate.reset);
-    })
+    client.get('application/rate_limit_status.json', {"resource": "statuses"}, function(error, body, response) {
+        var rate = body.resources.statuses["/statuses/mentions_timeline"];
+        console.log("멘션 뭐 왔나.. ".gray + rate.remaining + '/' + rate.limit, "RESET:" + (Number(rate.reset) - Number(Date.parse(new Date()))/1000) + "초" );
+    });
     client.get('statuses/mentions_timeline', params, function(error, tweets, response){
         if (!error) {
             var requesters = [];
-            if(tweets.length == 0) console.log("API 과열".red);
             for(var i = 0; i < tweets.length; i++) {
               if(Date.parse(tweets[i].created_at) > Date.parse(lastLoadTime)) {
                   console.log("멘션이당!!!!".green, tweets[i].user.screen_name + " : " + tweets[i].text);
@@ -98,6 +97,8 @@ function loadMentions() {
                 } else recommend(requesters);
             }
             syncClock();
+        } else if(error[0].code == 88) {
+            console.log("API 과열".red);
         }
     });
 }
@@ -117,9 +118,10 @@ function say(text, id2reply) {
     });
 }
 
-// loadSongs(function(){});
-// loadMentions();
+loadSongs(function(){});
+loadMentions();
 console.log("BOT INIT".green);
+
 setInterval(loadMentions, config.interval);
 
 
