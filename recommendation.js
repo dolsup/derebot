@@ -72,22 +72,22 @@ function pickasong() {
 }
 
 function loadMentions() {
-    // request("https://api.twitter.com/1.1/statuses/mentions_timeline.json", function(error, response, jsonstring) {
-    //     console.log(JSON.stringify(jsonstring));
-    // })
-    console.log("멘션 뭐 왔나..".gray);
+    request("https://api.twitter.com/1.1/application/rate_limit_status.json?resource=statuses", function(error, response, jsonstring) {
+         var rate = jsonstring.resources.statuses./statuses/mentions_timeline;
+         console.log("멘션 뭐 왔나.. ".gray + rate.remaining + '/' + rate.limit, "RESET:" + rate.reset);
+    })
     client.get('statuses/mentions_timeline', params, function(error, tweets, response){
         if (!error) {
             var requesters = [];
-            
+            if(tweets.length == 0) console.log("API 과열".red);
             for(var i = 0; i < tweets.length; i++) {
               if(Date.parse(tweets[i].created_at) > Date.parse(lastLoadTime)) {
                   console.log("멘션이당!!!!".green, tweets[i].user.screen_name + " : " + tweets[i].text);
                   if(tweets[i].text.indexOf("추천") != -1) {
                       requesters.push([tweets[i].user.screen_name, tweets[i].id_str]);
                       console.log("추천, 추천을 원하신다!!".red);
-                      config.lastLoadTime = lastLoadTime = tweets[i].created_at;
                   }
+                  config.lastLoadTime = lastLoadTime = tweets[i].created_at;
               }
             }
             if(requesters.length > 0) {
@@ -119,6 +119,7 @@ function say(text, id2reply) {
 
 // loadSongs(function(){});
 // loadMentions();
+console.log("BOT INIT".green);
 setInterval(loadMentions, config.interval);
 
 
