@@ -107,7 +107,7 @@ function recommend(requesters) {
     var selected;
     for(var i = 0; i < requesters.length; i++) {
         console.log(selected = pickasong());
-        say("@"+requesters[i][0] + " 흐, 흥! <" + selected[0] + ">, " + baseUrl + selected[1] + "에 있으니까 보던가 말던가!", requesters[i][1]);
+        say("@"+requesters[i][0] + " 흐, 흥! <" + selected[0] + ">, " + baseUrl + selected[1] + "에 있으니까 보든가 말든가!", requesters[i][1]);
     }
 }
 
