@@ -73,8 +73,11 @@ function pickasong() {
 
 function loadMentions() {
     client.get('application/rate_limit_status.json', {"resource": "statuses"}, function(error, body, response) {
-        var rate = body.resources.statuses["/statuses/mentions_timeline"];
-        console.log("멘션 뭐 왔나.. ".gray + rate.remaining + '/' + rate.limit, "RESET:" + (Number(rate.reset) - Number(Date.parse(new Date()))/1000) + "초" );
+        if(error) return;
+        if(body && body.resources && body.resources.statuses) {
+            var rate = body.resources.statuses["/statuses/mentions_timeline"];
+            console.log("멘션 뭐 왔나.. ".gray + rate.remaining + '/' + rate.limit, "RESET:" + (Number(rate.reset) - Number(Date.parse(new Date()))/1000) + "초" );
+        }
     });
     client.get('statuses/mentions_timeline', params, function(error, tweets, response){
         if (!error) {
@@ -97,7 +100,7 @@ function loadMentions() {
                 } else recommend(requesters);
             }
             syncClock();
-        } else if(error[0].code == 88) {
+        } else if(error[0] && error[0].code == 88) {
             console.log("API 과열".red);
         }
     });
